@@ -3,39 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mavi Rota: Dalga & Sörf Radarı - Standalone</title>
+  <title>Mavi Rota: Denizcilik, Dalga & Sörf Radarı</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c4a6e' stroke='%2344403c' stroke-width='1.5'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='-apple-system,BlinkMacSystemFont,Inter,sans-serif' font-weight='800' font-size='13' letter-spacing='-0.5'%3EMK%3C/text%3E%3C/svg%3E">
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917' stroke='%2344403c' stroke-width='1.5'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='-apple-system,BlinkMacSystemFont,Inter,sans-serif' font-weight='800' font-size='13' letter-spacing='-0.5'%3EMK%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="css/style.css">
-  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    :root { --mistral-ink: #1c1917; --mistral-slate: #78716c; --mistral-stone: #a8a29e; --mistral-hairline: #e7e5e4; --mistral-cream: #f5f5f4; --mistral-beige-deep: #d6d3d1; }
-    body { font-family: 'Inter', sans-serif; background-color: #fafaf9; color: var(--mistral-ink); }
-    h1, h2, .font-editorial { font-family: 'Newsreader', serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    :root {
+      --mistral-ink: #1c1917;
+      --mistral-slate: #78716c;
+      --mistral-stone: #a8a29e;
+      --mistral-hairline: #e7e5e4;
+      --mistral-cream: #f5f5f4;
+      --mistral-cream-deeper: #e7e5e4;
+      --mistral-cream-light: #fafaf9;
+      --mistral-beige-deep: #d6d3d1;
+      --mistral-orange: #fa520f;
+      --mistral-orange-deep: #e04400;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #fafaf9;
+      color: var(--mistral-ink);
+    }
+    h1, h2, h3, .font-editorial {
+      font-family: 'Newsreader', serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .bg-mistral-cream { background-color: var(--mistral-cream); }
+    .bg-mistral-cream-light { background-color: var(--mistral-cream-light); }
+    .bg-mistral-cream-deeper { background-color: var(--mistral-cream-deeper); }
     .text-mistral-ink { color: var(--mistral-ink); }
     .text-mistral-slate { color: var(--mistral-slate); }
     .text-mistral-stone { color: var(--mistral-stone); }
-    .bg-mistral-cream { background-color: var(--mistral-cream); }
+    .text-mistral-orange { color: var(--mistral-orange); }
     .border-mistral-hairline { border-color: var(--mistral-hairline); }
-    .bg-mistral-canvas { background-color: #0f172a; }
+    .border-mistral-beige-deep { border-color: var(--mistral-beige-deep); }
+    .border-mistral-orange { border-color: var(--mistral-orange); }
   </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 sm:p-8">
   <div class="max-w-6xl mx-auto">
-    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-3">
-          <a href="https://github.com/melihkarasu" target="_blank" class="text-mistral-slate hover:text-teal-500 transition text-sm flex items-center gap-1">&larr; GitHub Profiline Dön</a>
-          <span class="text-mistral-stone">|</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-600 text-xs font-semibold">Open Source Edition</span>
+    const content = `
+      <!-- Üst Başlık & Navigasyon -->
+      <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <a href="/" class="text-mistral-slate hover:text-mistral-orange transition text-sm flex items-center gap-1 font-medium">
+              &larr; Vitrine Dön
+            </a>
+            <span class="text-mistral-hairline">|</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-mistral-cream text-mistral-ink border border-mistral-beige-deep text-xs font-semibold">Coğrafya, Doğa & Çevre</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-normal font-editorial tracking-tight mt-1.5 text-mistral-ink flex items-center gap-2">
+            <span>🌊</span> Mavi Rota: Denizcilik, Dalga & Sörf Radarı
+          </h1>
+          <p class="text-mistral-slate text-sm mt-0.5 font-normal">
+            Open-Meteo Marine API ile Ege, Akdeniz ve Karadeniz kıyılarında canlı dalga boyu, periyot, rüzgar dalgası ve sörf uygunluğu.
+          </p>
         </div>
-        <h1 class="text-3xl sm:text-4xl font-normal font-editorial tracking-tight mt-1.5 text-mistral-ink flex items-center gap-2"><span>🌊</span> Mavi Rota: Dalga & Sörf Radarı</h1>
+
+        <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-mistral-hairline text-xs text-mistral-ink shadow-xs">
+          <span class="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse"></span>
+          <span class="font-medium" id="marine-status-badge">Deniz Telemetrisi Açık</span>
+        </div>
       </div>
-    </div>
-    
+
+      <!-- KIYI & SPOT SEÇİCİ PANEL -->
+      <div class="p-6 rounded-2xl bg-white border border-mistral-hairline shadow-sm mb-8 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+          <div class="sm:col-span-8">
+            <select id="select-spot" onchange="onSpotChange()" class="w-full px-4 py-2.5 rounded-lg bg-white border border-mistral-hairline text-sm text-mistral-ink font-medium focus:outline-none focus:border-mistral-orange transition">
+              <option value="alacati" selected>🏄‍♂️ Alaçatı Sörf Koyu (İzmir / Ege)</option>
+              <option value="bodrum">⛵ Bodrum Yalıkavak (Muğla / Güney Ege)</option>
+              <option value="kas">🤿 Kaş / Kaputaş Kıyısı (Antalya / Akdeniz)</option>
+              <option value="bozcaada">🍇 Bozcaada Ayazma Koyu (Çanakkale / Kuzey Ege)</option>
+              <option value="sile">🌊 Şile & Karadeniz Kıyıları (İstanbul / Karadeniz)</option>
+              <option value="antalya">🏖️ Antalya Konyaaltı Körfezi (Akdeniz)</option>
+              <option value="datca">🌅 Datça Palamutbükü (Ege-Akdeniz Birleşimi)</option>
+              <option value="cesme">🏊‍♂️ Çeşme Ilıca Plajı (İzmir)</option>
+              <option value="fethiye">🛶 Fethiye Ölüdeniz Lagünü (Muğla)</option>
+            </select>
+          </div>
+          <div class="sm:col-span-4 flex gap-2">
+            <button 
+              type="button" 
+              onclick="refreshMarineData()" 
+              class="w-full py-2.5 px-4 rounded-md bg-mistral-orange hover:bg-mistral-orange-deep text-white font-medium text-xs transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>🔄</span> Dalga Durumunu Yenile
+            </button>
+          </div>
+        </div>
+
+        <!-- Hızlı Kıyı Hapları -->
+        <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-mistral-hairline text-xs">
+          <span class="text-mistral-stone font-medium mr-1">Popüler Noktalar:</span>
+          <button onclick="setSpot('alacati')" class="px-2.5 py-1 rounded-md text-mistral-ink font-boldbg-mistral-cream hover:bg-mistral-cream-deeper text-mistral-ink border border-mistral-beige-deep transition">🏄‍♂️ Alaçatı</button>
+          <button onclick="setSpot('bodrum')" class="px-2.5 py-1 rounded-md text-mistral-ink font-boldbg-mistral-cream hover:bg-mistral-cream-deeper text-mistral-ink border border-mistral-beige-deep transition">⛵ Bodrum</button>
+          <button onclick="setSpot('kas')" class="px-2.5 py-1 rounded-md text-mistral-ink font-boldbg-mistral-cream hover:bg-mistral-cream-deeper text-mistral-ink border border-mistral-beige-deep transition">🤿 Kaş</button>
+          <button onclick="setSpot('sile')" class="px-2.5 py-1 rounded-md text-mistral-ink font-boldbg-mistral-cream hover:bg-mistral-cream-deeper text-mistral-ink border border-mistral-beige-deep transition">🌊 Şile</button>
+          <button onclick="setSpot('bozcaada')" class="px-2.5 py-1 rounded-md text-mistral-ink font-boldbg-mistral-cream hover:bg-mistral-cream-deeper text-mistral-ink border border-mistral-beige-deep transition">🍇 Bozcaada</button>
+        </div>
+      </div>
+
+      <!-- CANLI DALGA DURUM KARTI & İSTATİSTİKLER -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+        <!-- Sol: Dalga Durumu ve Tavsiye Paneli (5 Kolon) -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="p-6 rounded-2xl bg-white border border-mistral-hairline shadow-sm text-center relative overflow-hidden">
+            <span class="text-xs uppercase tracking-wider text-mistral-stone font-semibold" id="lbl-spot-title">ALAÇATI SÖRF KOYU</span>
+            
+            <div class="my-4">
+              <span class="text-6xl sm:text-7xl font-bold font-editorial text-mistral-ink" id="val-wave-height">0.4</span>
+              <span class="text-xs text-mistral-slate block mt-1">Metre Dalga Yüksekliği</span>
+            </div>
+
+            <!-- Deniz Durumu Rozeti -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 border shadow-2xs" id="box-condition-badge">
+              <span id="txt-condition">Sakin & Durgun</span>
+            </div>
+
+            <!-- Aktivite & Güvenlik Tavsiyesi -->
+            <div class="p-4 rounded-xl bg-mistral-cream border border-mistral-beige-deep text-left text-xs text-mistral-slate space-y-2">
+              <div class="font-bold text-mistral-ink flex items-center gap-1.5">
+                <span>⚓</span> Deniz & Sörf Uygunluğu
+              </div>
+              <p id="txt-marine-advice" class="leading-relaxed">
+                Deniz çarşaf gibi. Yüzme, kano, SUP ve aile aktiviteleri için son derece ideal.
+              </p>
+            </div>
+          </div>
+
+          <!-- Denizcilik Parametreleri Grid -->
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="p-4 rounded-xl bg-white border border-mistral-hairline shadow-xs">
+              <span class="text-mistral-stone block font-medium">Dalga Periyodu</span>
+              <strong class="text-xl font-bold font-editorial text-mistral-ink mt-1 block" id="val-wave-period">3.2 s</strong>
+              <span class="text-[10px] text-mistral-stone">İki dalga arası süre</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-mistral-hairline shadow-xs">
+              <span class="text-mistral-stone block font-medium">Rüzgar Dalgası</span>
+              <strong class="text-xl font-bold font-editorial text-mistral-orange mt-1 block" id="val-wind-wave">0.1 m</strong>
+              <span class="text-[10px] text-mistral-stone">Yüzey çalkantısı</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-mistral-hairline shadow-xs">
+              <span class="text-mistral-stone block font-medium">Dalga Açısı / Yönü</span>
+              <strong class="text-xl font-bold font-editorial text-mistral-ink mt-1 block" id="val-wave-dir">180°</strong>
+              <span class="text-[10px] text-mistral-stone" id="val-wave-cardinal">Güney</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-mistral-hairline shadow-xs">
+              <span class="text-mistral-stone block font-medium">Koordinat</span>
+              <strong class="text-xs font-mono font-bold text-mistral-slate mt-1 block" id="val-coords">38.25° / 26.38°</strong>
+              <span class="text-[10px] text-mistral-stone">Enlem / Boylam</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sağ: 48 Saatlik Dalga Boyu Tahmin Grafiği (7 Kolon) -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="p-6 rounded-2xl bg-white border border-mistral-hairline shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-mistral-hairline">
+              <div>
+                <h3 class="text-base font-bold font-editorial text-mistral-ink">48 Saatlik Dalga Boyu Tahmin Grafiği</h3>
+                <p class="text-xs text-mistral-stone mt-0.5">Metre cinsinden saatlik dalga yüksekliği seyri</p>
+              </div>
+            </div>
+
+            <div class="h-[280px]">
+              <canvas id="chart-marine"></canvas>
+            </div>
+          </div>
+
+          <!-- Denizcilik Rehber Kartı -->
+          <div class="p-5 rounded-xl bg-mistral-cream-light border border-mistral-beige-deep text-xs text-mistral-slate space-y-2">
+            <div class="font-bold text-mistral-ink flex items-center gap-1.5">
+              <span>🏄‍♀️</span> Sörfçüler ve Yelkenciler İçin İpucu
+            </div>
+            <p class="leading-relaxed">
+              <strong>Dalga Periyodu (Period):</strong> Periyot süresi ne kadar uzunsa (örn: 8-12 saniye), dalgalar o kadar düzenli, güçlü ve sörf için kalitelidir. Kısa periyotlu dalgalar (2-4 saniye) genellikle yerel rüzgarın yarattığı düzensiz yüzey çalkantısını gösterir.
+            </p>
+          </div>
+        </div>
+      </div>
   </div>
+
+  <footer class="mt-16 text-center text-xs text-mistral-stone border-t border-mistral-hairline pt-6">
+    <p>Açık Kaynak Standalone Sürüm • Veriler: <a href="https://open-meteo.com/en/docs/marine-weather-api" target="_blank" rel="noopener" class="underline hover:text-mistral-ink">Open-Meteo Marine API</a> • <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener" class="underline hover:text-mistral-ink">Public APIs</a></p>
+  </footer>
+
+  <script src="js/app.js"></script>
 </body>
 </html>
