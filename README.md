@@ -9,7 +9,7 @@ Open-Meteo Marine API ile Ege, Akdeniz ve Karadeniz kıyılarında canlı dalga 
 
 ## 🚀 Hızlı Başlangıç
 1. Bu repoyu klonlayın.
-2.  dosyasını tarayıcıda açın.
+2. `index.html` dosyasını tarayıcıda açın.
 
 
 
